@@ -1,15 +1,5 @@
-% Authors:
-%		Gabriel Ferreira Silva (*)
-% 		Mauricio Ayala-Rincón (*)
-% 		Daniele Nantes Sobrinho (*)
-% 		Maribel Fernandez (**)
-%		(*) - University of Brasília			(**) - King's College London
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 rename_input: THEORY
 BEGIN 
-      %IMPORTING apply_ac, more_list_theory_props
       IMPORTING ac_step, more_list_theory_props
 
 pi: VAR perm

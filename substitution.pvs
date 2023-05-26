@@ -173,8 +173,8 @@ renaming: TYPE = {sigma: sub | renaming?(sigma)}
 rho: VAR renaming
 
 % TO DO: remove that from the formalisation
-keep_fresh?(G, sigma): bool = 
-    FORALL (a, X): member((a, X), G) IMPLIES fresh(G)(a, subs(sigma)(X))
+%keep_fresh?(G, sigma): bool = 
+%    FORALL (a, X): member((a, X), G) IMPLIES fresh(G)(a, subs(sigma)(X))
 
 % action of a renaming in a context Gamma
 subs(rho, G): RECURSIVE fresh_context = 
@@ -183,8 +183,13 @@ subs(rho, G): RECURSIVE fresh_context =
    ENDIF
 MEASURE G by << 
 
-keep_fresh_ren?(G, rho): bool = 
-    FORALL (a, X): member((a, X), G) IFF member((a, V(subs(rho)(X))), G)
+% 
+disjoint?(delta, sigma): bool =
+    disjoint?(union(dom(delta), vars(img(delta))), union(dom(sigma), vars(img(sigma))))
+
+% remove from the formalisation
+%keep_fresh_ren?(G, rho): bool = 
+%    FORALL (a, X): member((a, X), G) IFF member((a, V(subs(rho)(X))), G)
 
 %%%%%%%%%%%%%%%%%%% Theorems
 % substitution and their effects on the terms
@@ -232,6 +237,9 @@ subs_func: LEMMA
 
 subs_abs2: LEMMA 
     abs?(subs(sigma)(t)) IMPLIES (abs?(t) OR var?(t))
+
+subs_basic_ext: LEMMA 
+   subs(sigma_basic, ext(pi)(t)) = ext(pi)(subs(sigma_basic, t))
 
 subs_ext_pi: LEMMA
     subs(sigma)(pi * X) = ext(pi)(subs(sigma)(X))
@@ -491,6 +499,7 @@ apply_sub_elim_var_t2: LEMMA
 subs_singleton: LEMMA
     subs(sigma)(singleton(t)) = singleton(subs(sigma)(t))
 
+
 img_append_subset: LEMMA
     subset?(img(append(sigma, delta)), union(image(subs(sigma))(img(delta)), img(sigma)))
 
@@ -689,6 +698,10 @@ equal_sub_res_trans: LEMMA
 equal_syn_t: LEMMA 
    equal_syn?(sigma, sigma1, vars(t)) IMPLIES subs(sigma)(t) = subs(sigma1)(t) 
  
+equal_syn_append: LEMMA 
+   equal_syn?(sigma, sigma1, V1) IMPLIES
+   equal_syn?(append(delta, sigma), append(delta, sigma1), V1)
+
 % this lemmas appeared when proving correctness and completeness
 idempotent_append_cond: LEMMA
    idempotent?(sigma) AND NOT member(X, vars(t)) AND NOT member(X, dom(sigma))
@@ -816,6 +829,14 @@ renaming_susp_var: LEMMA
 
 renaming_var3: LEMMA 
     var?(t) IMPLIES V(subs(rho)(t)) = V(subs(rho)(V(t)))
+
+renaming_susp_var2: LEMMA
+    var?(s) IMPLIES var?(subs(rho)(s)) AND p(subs(rho)(s)) = p(s)
+
+renaming_susp_var_ext: LEMMA 
+    var?(s) IMPLIES
+    ext(reverse(p(subs(rho)(s))))(subs(rho)(t)) =
+    subs(rho)(ext(reverse(p(s)))(t))
 
 renaming_num_arg: LEMMA
     num_arg(f, subs(rho)(t)) = num_arg(f, t)

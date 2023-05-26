@@ -5323,7 +5323,7 @@
         nil))
       nil))
     nil)
-   (nil (fc def-decl "fresh_context" freshness nil)
+   ((fc def-decl "fresh_context" freshness nil)
     (DS const-decl "list[atom]" atoms nil)
     (vars_fc formula-decl nil freshness nil)
     (fresh_subs? def-decl "[fresh_context, bool]" fresh_subs nil)
@@ -5348,9 +5348,9 @@
     (vars const-decl "finite_set[variable]" unification nil)
     (member const-decl "bool" unification nil)
     (length def-decl "nat" list_props nil)
-    (singleton const-decl "(singleton?)" sets nil) nil nil
+    (singleton const-decl "(singleton?)" sets nil)
     (rhs const-decl "args" unification nil)
-    (sec_proj def-decl "list[T2]" list_theory2 nil) nil
+    (sec_proj def-decl "list[T2]" list_theory2 nil)
     (ext_vars formula-decl nil term_properties nil)
     (img_basic_sub_var formula-decl nil substitution nil)
     (fresh_subs?_var formula-decl nil fresh_subs nil)
@@ -5370,7 +5370,7 @@
     (sub type-eq-decl nil substitution nil)
     (basic_sub type-eq-decl nil substitution nil)
     (TRUE const-decl "bool" booleans nil)
-    (AND const-decl "[bool, bool -> bool]" booleans nil) nil
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
     (PRED type-eq-decl nil defined_types nil)
     (term type-decl nil term_adt nil)
     (ac_symbol type-eq-decl nil term_properties nil)
@@ -16153,10 +16153,6 @@
     (vars_unif_prb formula-decl nil unification nil)
     (subset? const-decl "bool" sets nil))
    shostak))
- (inst_step_supset_dom_dom 0
-  (inst_step_supset_dom_dom-1 nil 3882633164
-   ("" (skeep) (("" (assert) (("" (postpone) nil nil)) nil)) nil) nil
-   shostak))
  (inst_step_dom_PV 0
   (inst_step_dom_PV-1 nil 3883224114
    ("" (measure-induct "length(P)" "P")
@@ -25728,7 +25724,6 @@
     (ac_symbol type-eq-decl nil term_properties nil)
     (term type-decl nil term_adt nil)
     (PRED type-eq-decl nil defined_types nil)
-    (every adt-def-decl "boolean" term_adt nil)
     (AND const-decl "[bool, bool -> bool]" booleans nil)
     (TRUE const-decl "bool" booleans nil)
     (variable type-eq-decl nil term_properties nil)
@@ -25745,11 +25740,8 @@
     (basic_sub type-eq-decl nil substitution nil)
     (sub type-eq-decl nil substitution nil)
     (IMPLIES const-decl "[bool, bool -> bool]" booleans nil)
-    (match_condition? const-decl "bool" aux_unification nil)
     (member const-decl "bool" sets nil)
-    (every adt-def-decl "boolean" list_adt nil)
     (args type-eq-decl nil term_properties nil)
-    (vars def-decl "finite_set[variable]" term_properties nil)
     (rhs const-decl "args" unification nil)
     (NOT const-decl "[bool -> bool]" booleans nil)
     (vars def-decl "finite_set[variable]" freshness nil)
@@ -25759,17 +25751,12 @@
     (null adt-constructor-decl "(null?)" list_adt nil)
     (= const-decl "[T, T -> boolean]" equalities nil)
     (list_cons_extensionality formula-decl nil list_adt nil)
-    (t skolem-const-decl
-     "term[atom, perm, variable, f_symbol, ac_symbol]" inst_step nil)
-    (s skolem-const-decl
-     "term[atom, perm, variable, f_symbol, ac_symbol]" inst_step nil)
     (inst_step1_no_effect_cor formula-decl nil inst_step nil)
     (nnint_plus_posint_is_posint application-judgement "posint"
      integers nil)
     (real_lt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
     (inst_step_match_condition_cdr formula-decl nil inst_step nil)
-    (skp skolem-const-decl "bool" inst_step nil)
     (inst_step_match_cond_not_skip formula-decl nil inst_step nil)
     (union const-decl "set" sets nil)
     (sec_proj def-decl "list[T2]" list_theory2 nil)
@@ -25782,15 +25769,11 @@
     (apply_sub_len formula-decl nil unification nil)
     (inst_step_match_condition_apply_sub formula-decl nil inst_step
      nil)
-    (fai skolem-const-decl "bool" inst_step nil)
-    (del skolem-const-decl "sub" inst_step nil)
-    (P1 skolem-const-decl "unif_prb" inst_step nil)
     (idempotent? const-decl "bool" substitution nil)
     (subs_map formula-decl nil substitution nil)
     (map_member4 formula-decl nil map_theory nil)
     (apply_sub_sec_proj formula-decl nil unification nil)
     (apply_sub_not_elim_var_t formula-decl nil substitution nil)
-    (subs def-decl "term" substitution nil)
     (vars_args formula-decl nil term_properties nil)
     (inst_step_match_cond_dom formula-decl nil inst_step nil)
     (inst_step_vars_context formula-decl nil inst_step nil)
@@ -30046,6 +30029,672 @@
     (cons? adt-recognizer-decl "[list -> boolean]" list_adt nil)
     (car adt-accessor-decl "[(cons?) -> T]" list_adt nil))
    nil))
+ (inst_step_renaming_ctx 0
+  (inst_step_renaming_ctx-1 nil 3891964743
+   ("" (measure-induct "length(P)" "P")
+    (("" (skolem 1 "P")
+      (("" (prop)
+        (("" (skeep)
+          (("" (hide -1)
+            ((""
+              (name-replace "Gf" "inst_step(PV, G, P, null, null)`1")
+              ((""
+                (name-replace "Gf_"
+                 "inst_step(PV, G, apply_sub(rho, P), null, null)`1")
+                (("" (reveal -2)
+                  (("" (case "null?(P)")
+                    (("1" (expand "Gf" 1)
+                      (("1" (expand "inst_step" 1)
+                        (("1" (assert)
+                          (("1" (expand "Gf_" 1)
+                            (("1" (expand "apply_sub" 1)
+                              (("1"
+                                (expand "inst_step" 1)
+                                (("1" (propax) nil nil))
+                                nil))
+                              nil))
+                            nil))
+                          nil))
+                        nil))
+                      nil)
+                     ("2" (name-replace "t" "car(P)`1")
+                      (("1" (name-replace "s" "car(P)`2")
+                        (("1" (case "subs(rho)(t) = t")
+                          (("1" (case "subs(rho)(s) = s")
+                            (("1" (expand "inst_step" -5)
+                              (("1"
+                                (assert)
+                                (("1"
+                                  (replace -3)
+                                  (("1"
+                                    (replace -4)
+                                    (("1"
+                                      (name-replace
+                                       "G1"
+                                       "inst_step(PV, G, t, s)`1")
+                                      (("1"
+                                        (name-replace
+                                         "del"
+                                         "inst_step(PV, G, t, s)`2")
+                                        (("1"
+                                          (name-replace
+                                           "skp"
+                                           "inst_step(PV, G, t, s)`3")
+                                          (("1"
+                                            (name-replace
+                                             "fai"
+                                             "inst_step(PV, G, t, s)`4")
+                                            (("1"
+                                              (lift-if)
+                                              (("1"
+                                                (reveal -1 -2 -3 -4)
+                                                (("1"
+                                                  (split -9)
+                                                  (("1"
+                                                    (flatten)
+                                                    (("1"
+                                                      (expand "Gf_")
+                                                      (("1"
+                                                        (expand
+                                                         "apply_sub"
+                                                         2)
+                                                        (("1"
+                                                          (expand
+                                                           "apply_sub"
+                                                           2
+                                                           1)
+                                                          (("1"
+                                                            (replace
+                                                             -9)
+                                                            (("1"
+                                                              (replace
+                                                               -10)
+                                                              (("1"
+                                                                (replace
+                                                                 -7)
+                                                                (("1"
+                                                                  (replace
+                                                                   -8)
+                                                                  (("1"
+                                                                    (expand
+                                                                     "inst_step"
+                                                                     2)
+                                                                    (("1"
+                                                                      (assert)
+                                                                      nil
+                                                                      nil))
+                                                                    nil))
+                                                                  nil))
+                                                                nil))
+                                                              nil))
+                                                            nil))
+                                                          nil))
+                                                        nil))
+                                                      nil))
+                                                    nil)
+                                                   ("2"
+                                                    (flatten)
+                                                    (("2"
+                                                      (split -1)
+                                                      (("1"
+                                                        (flatten)
+                                                        (("1"
+                                                          (rewrite
+                                                           "inst_step1_no_effect_cor")
+                                                          (("1"
+                                                            (expand
+                                                             "Gf_"
+                                                             3)
+                                                            (("1"
+                                                              (expand
+                                                               "apply_sub"
+                                                               3)
+                                                              (("1"
+                                                                (expand
+                                                                 "apply_sub"
+                                                                 3
+                                                                 1)
+                                                                (("1"
+                                                                  (replace
+                                                                   -9)
+                                                                  (("1"
+                                                                    (replace
+                                                                     -10)
+                                                                    (("1"
+                                                                      (replace
+                                                                       -7)
+                                                                      (("1"
+                                                                        (replace
+                                                                         -8)
+                                                                        (("1"
+                                                                          (expand
+                                                                           "inst_step"
+                                                                           3
+                                                                           1)
+                                                                          (("1"
+                                                                            (lift-if)
+                                                                            (("1"
+                                                                              (assert)
+                                                                              (("1"
+                                                                                (rewrite
+                                                                                 "inst_step1_no_effect_cor"
+                                                                                 4)
+                                                                                (("1"
+                                                                                  (hide
+                                                                                   -1
+                                                                                   -3
+                                                                                   -4
+                                                                                   -5
+                                                                                   -6
+                                                                                   -7
+                                                                                   -8
+                                                                                   -9)
+                                                                                  (("1"
+                                                                                    (reveal
+                                                                                     -13)
+                                                                                    (("1"
+                                                                                      (inst
+                                                                                       -1
+                                                                                       "cdr(P)")
+                                                                                      (("1"
+                                                                                        (expand
+                                                                                         "length"
+                                                                                         -1
+                                                                                         2)
+                                                                                        (("1"
+                                                                                          (assert)
+                                                                                          (("1"
+                                                                                            (inst
+                                                                                             -1
+                                                                                             "FV"
+                                                                                             "G"
+                                                                                             "PV"
+                                                                                             "V"
+                                                                                             "rho")
+                                                                                            (("1"
+                                                                                              (assert)
+                                                                                              (("1"
+                                                                                                (prop)
+                                                                                                (("1"
+                                                                                                  (reveal
+                                                                                                   -2)
+                                                                                                  (("1"
+                                                                                                    (expand
+                                                                                                     "skp"
+                                                                                                     -1)
+                                                                                                    (("1"
+                                                                                                      (use
+                                                                                                       "inst_step_match_condition_cdr")
+                                                                                                      (("1"
+                                                                                                        (assert)
+                                                                                                        (("1"
+                                                                                                          (assert)
+                                                                                                          (("1"
+                                                                                                            (case
+                                                                                                             "P = cons((t, s), cdr(P))")
+                                                                                                            (("1"
+                                                                                                              (assert)
+                                                                                                              nil
+                                                                                                              nil)
+                                                                                                             ("2"
+                                                                                                              (expand
+                                                                                                               ("t"
+                                                                                                                "s"))
+                                                                                                              (("2"
+                                                                                                                (decompose-equality
+                                                                                                                 1)
+                                                                                                                nil
+                                                                                                                nil))
+                                                                                                              nil))
+                                                                                                            nil))
+                                                                                                          nil))
+                                                                                                        nil))
+                                                                                                      nil))
+                                                                                                    nil))
+                                                                                                  nil)
+                                                                                                 ("2"
+                                                                                                  (hide-all-but
+                                                                                                   (-7
+                                                                                                    1
+                                                                                                    4))
+                                                                                                  (("2"
+                                                                                                    (grind)
+                                                                                                    nil
+                                                                                                    nil))
+                                                                                                  nil))
+                                                                                                nil))
+                                                                                              nil))
+                                                                                            nil))
+                                                                                          nil))
+                                                                                        nil))
+                                                                                      nil))
+                                                                                    nil))
+                                                                                  nil))
+                                                                                nil))
+                                                                              nil))
+                                                                            nil))
+                                                                          nil))
+                                                                        nil))
+                                                                      nil))
+                                                                    nil))
+                                                                  nil))
+                                                                nil))
+                                                              nil))
+                                                            nil))
+                                                          nil))
+                                                        nil)
+                                                       ("2"
+                                                        (flatten)
+                                                        (("2"
+                                                          (expand
+                                                           "apply_sub"
+                                                           -1
+                                                           2)
+                                                          (("2"
+                                                            (rewrite
+                                                             "append_null")
+                                                            (("2"
+                                                              (rewrite
+                                                               "inst_step1_no_effect_cor2")
+                                                              (("2"
+                                                                (expand
+                                                                 "Gf_"
+                                                                 4)
+                                                                (("2"
+                                                                  (expand
+                                                                   "apply_sub"
+                                                                   4)
+                                                                  (("2"
+                                                                    (expand
+                                                                     "apply_sub"
+                                                                     4
+                                                                     1)
+                                                                    (("2"
+                                                                      (replace
+                                                                       -8)
+                                                                      (("2"
+                                                                        (replace
+                                                                         -9)
+                                                                        (("2"
+                                                                          (replace
+                                                                           -6)
+                                                                          (("2"
+                                                                            (replace
+                                                                             -7)
+                                                                            (("2"
+                                                                              (expand
+                                                                               "inst_step"
+                                                                               4)
+                                                                              (("2"
+                                                                                (assert)
+                                                                                (("2"
+                                                                                  (replace
+                                                                                   -3)
+                                                                                  (("2"
+                                                                                    (hide
+                                                                                     3
+                                                                                     4)
+                                                                                    (("2"
+                                                                                      (replace
+                                                                                       -2)
+                                                                                      (("2"
+                                                                                        (rewrite
+                                                                                         "append_null"
+                                                                                         4)
+                                                                                        (("2"
+                                                                                          (expand
+                                                                                           "apply_sub"
+                                                                                           4
+                                                                                           3)
+                                                                                          (("2"
+                                                                                            (rewrite
+                                                                                             "inst_step1_no_effect_cor2")
+                                                                                            (("2"
+                                                                                              (rewrite
+                                                                                               "inst_step1_no_effect_cor2"
+                                                                                               4)
+                                                                                              (("2"
+                                                                                                (postpone)
+                                                                                                nil
+                                                                                                nil))
+                                                                                              nil))
+                                                                                            nil))
+                                                                                          nil))
+                                                                                        nil))
+                                                                                      nil))
+                                                                                    nil))
+                                                                                  nil))
+                                                                                nil))
+                                                                              nil))
+                                                                            nil))
+                                                                          nil))
+                                                                        nil))
+                                                                      nil))
+                                                                    nil))
+                                                                  nil))
+                                                                nil))
+                                                              nil))
+                                                            nil))
+                                                          nil))
+                                                        nil))
+                                                      nil))
+                                                    nil))
+                                                  nil))
+                                                nil))
+                                              nil))
+                                            nil))
+                                          nil))
+                                        nil))
+                                      nil))
+                                    nil))
+                                  nil))
+                                nil))
+                              nil)
+                             ("2" (postpone) nil nil))
+                            nil)
+                           ("2" (use "subs_no_effect_t")
+                            (("2" (assert)
+                              (("2"
+                                (hide-all-but (-2 -8 -9 1 3))
+                                (("2"
+                                  (expand "disjoint?")
+                                  (("2"
+                                    (expand ("empty?" "subset?"))
+                                    (("2"
+                                      (skeep)
+                                      (("2"
+                                        (inst?)
+                                        (("2"
+                                          (inst?)
+                                          (("2"
+                                            (assert)
+                                            (("2"
+                                              (expand
+                                               ("member"
+                                                "intersection")
+                                               -1)
+                                              (("2"
+                                                (expand
+                                                 ("member"
+                                                  "intersection")
+                                                 2)
+                                                (("2"
+                                                  (flatten)
+                                                  (("2"
+                                                    (assert)
+                                                    (("2"
+                                                      (grind)
+                                                      nil
+                                                      nil))
+                                                    nil))
+                                                  nil))
+                                                nil))
+                                              nil))
+                                            nil))
+                                          nil))
+                                        nil))
+                                      nil))
+                                    nil))
+                                  nil))
+                                nil))
+                              nil))
+                            nil))
+                          nil))
+                        nil)
+                       ("2" (assert) nil nil))
+                      nil))
+                    nil))
+                  nil))
+                nil))
+              nil))
+            nil))
+          nil))
+        nil))
+      nil))
+    nil)
+   nil shostak))
+ (inst_step_renaming 0
+  (inst_step_renaming-1 nil 3891944410
+   ("" (measure-induct "length(P)" "P")
+    (("" (skolem 1 "P")
+      (("" (prop)
+        (("" (hide -1)
+          (("" (skeep)
+            ((""
+              (name-replace "G1_"
+               " inst_step(PV, G, apply_sub(rho, P), null, null)`1")
+              ((""
+                (name-replace "G1" "inst_step(PV, G, P, null, null)`1")
+                ((""
+                  (name-replace "P1"
+                   "inst_step(PV, G, P, null, null)`2")
+                  ((""
+                    (name-replace "P1_"
+                     "inst_step(PV, G, apply_sub(rho, P), null, null)`2")
+                    ((""
+                      (name-replace "fail_"
+                       "inst_step(PV, G, apply_sub(rho, P), null, null)`4")
+                      ((""
+                        (name-replace "fail1"
+                         "inst_step(PV, G, P, null, null)`4")
+                        ((""
+                          (name-replace "sig1_"
+                           "inst_step(PV, G, apply_sub(rho, P), null, null)`3")
+                          ((""
+                            (name-replace "sig1"
+                             "inst_step(PV, G, P, null, null)`3")
+                            (("" (case "null?(P)")
+                              (("1"
+                                (hide -3 -4 -5 -6)
+                                (("1"
+                                  (expand
+                                   ("G1"
+                                    "G1_"
+                                    "P1"
+                                    "P1_"
+                                    "fail1"
+                                    "fail_"
+                                    "sig1"
+                                    "sig1_"))
+                                  (("1"
+                                    (expand "apply_sub" 1)
+                                    (("1"
+                                      (assert)
+                                      (("1"
+                                        (expand "inst_step" 1)
+                                        (("1"
+                                          (expand "equal_syn?" 1)
+                                          (("1" (propax) nil nil))
+                                          nil))
+                                        nil))
+                                      nil))
+                                    nil))
+                                  nil))
+                                nil)
+                               ("2"
+                                (name-replace "t" "car(P)`1")
+                                (("1"
+                                  (name-replace "s" "car(P)`2")
+                                  (("1"
+                                    (case "subs(rho)(t) = t")
+                                    (("1"
+                                      (case "subs(rho)(s) = s")
+                                      (("1" (postpone) nil nil)
+                                       ("2"
+                                        (use "subs_no_effect_t")
+                                        (("2"
+                                          (assert)
+                                          (("2"
+                                            (expand "disjoint?" 1)
+                                            (("2"
+                                              (expand "empty?" 1)
+                                              (("2"
+                                                (skeep)
+                                                (("2"
+                                                  (expand
+                                                   ("member"
+                                                    "intersection")
+                                                   -1)
+                                                  (("2"
+                                                    (flatten)
+                                                    (("2"
+                                                      (case
+                                                       "P = cons((t, s), cdr(P))")
+                                                      (("1"
+                                                        (replace -1 -7)
+                                                        (("1"
+                                                          (hide 1)
+                                                          (("1"
+                                                            (reveal -7)
+                                                            (("1"
+                                                              (expand
+                                                               "inst_step"
+                                                               -1)
+                                                              (("1"
+                                                                (replace
+                                                                 -6)
+                                                                (("1"
+                                                                  (replace
+                                                                   -7)
+                                                                  (("1"
+                                                                    (name-replace
+                                                                     "G2"
+                                                                     "inst_step(PV, G, t, s)`1")
+                                                                    (("1"
+                                                                      (name-replace
+                                                                       "del"
+                                                                       "inst_step(PV, G, t, s)`2")
+                                                                      (("1"
+                                                                        (name-replace
+                                                                         "skp"
+                                                                         "inst_step(PV, G, t, s)`3")
+                                                                        (("1"
+                                                                          (name-replace
+                                                                           "fai"
+                                                                           "inst_step(PV, G, t, s)`4")
+                                                                          (("1"
+                                                                            (postpone)
+                                                                            nil
+                                                                            nil))
+                                                                          nil))
+                                                                        nil))
+                                                                      nil))
+                                                                    nil))
+                                                                  nil))
+                                                                nil))
+                                                              nil))
+                                                            nil))
+                                                          nil))
+                                                        nil)
+                                                       ("2"
+                                                        (decompose-equality
+                                                         1)
+                                                        nil
+                                                        nil))
+                                                      nil))
+                                                    nil))
+                                                  nil))
+                                                nil))
+                                              nil))
+                                            nil))
+                                          nil))
+                                        nil))
+                                      nil)
+                                     ("2"
+                                      (hide 3)
+                                      (("2"
+                                        (use "subs_no_effect_t")
+                                        (("2"
+                                          (assert)
+                                          (("2"
+                                            (hide-all-but (-6 -7 1))
+                                            (("2"
+                                              (expand "disjoint?")
+                                              (("2"
+                                                (expand
+                                                 ("empty?" "subset?"))
+                                                (("2"
+                                                  (skeep)
+                                                  (("2"
+                                                    (inst?)
+                                                    (("2"
+                                                      (inst?)
+                                                      (("2"
+                                                        (expand
+                                                         ("member"
+                                                          "intersection")
+                                                         1)
+                                                        (("2"
+                                                          (expand
+                                                           ("member"
+                                                            "intersection")
+                                                           -1)
+                                                          (("2"
+                                                            (flatten)
+                                                            (("2"
+                                                              (assert)
+                                                              (("2"
+                                                                (reveal
+                                                                 -4
+                                                                 2)
+                                                                (("2"
+                                                                  (expand
+                                                                   "lhs"
+                                                                   3)
+                                                                  (("2"
+                                                                    (expand
+                                                                     "first_proj"
+                                                                     3)
+                                                                    (("2"
+                                                                      (expand
+                                                                       "vars"
+                                                                       3)
+                                                                      (("2"
+                                                                        (expand
+                                                                         ("member"
+                                                                          "union")
+                                                                         3)
+                                                                        (("2"
+                                                                          (propax)
+                                                                          nil
+                                                                          nil))
+                                                                        nil))
+                                                                      nil))
+                                                                    nil))
+                                                                  nil))
+                                                                nil))
+                                                              nil))
+                                                            nil))
+                                                          nil))
+                                                        nil))
+                                                      nil))
+                                                    nil))
+                                                  nil))
+                                                nil))
+                                              nil))
+                                            nil))
+                                          nil))
+                                        nil))
+                                      nil))
+                                    nil))
+                                  nil)
+                                 ("2" (assert) nil nil))
+                                nil))
+                              nil))
+                            nil))
+                          nil))
+                        nil))
+                      nil))
+                    nil))
+                  nil))
+                nil))
+              nil))
+            nil))
+          nil))
+        nil))
+      nil))
+    nil)
+   nil shostak))
  (inst_step_mem 0
   (inst_step_mem-1 nil 3882537521
    ("" (measure-induct "length(lst_P)" "lst_P")

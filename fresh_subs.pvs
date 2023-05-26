@@ -245,6 +245,11 @@ fresh_subs?_complete2: LEMMA
    equal?(G)(delta, append(delta, sigma)) IMPLIES 
    fresh_subs(G)(delta, Nabla) = (fresh_subs(G)(delta, Nabla1) AND b)    
 
+fresh_subs?_subs_no_effect: LEMMA 
+   LET (Nabla1, b) = fresh_subs?(sigma, Nabla) IN 
+   disjoint?(dom(sigma), vars(Nabla)) IMPLIES 
+   fresh_subs?(sigma, Nabla) = (Nabla, TRUE)
+
 %%%%%%%%%%%%%%%%%%%%% necessary lemmas related to functions fresh_subs and similar ones
 % useful lemmas that appeared in the the proof of completeness
 aux_lemma_fresh_sub1: LEMMA
