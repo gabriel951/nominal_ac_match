@@ -31,125 +31,165 @@ var_inputs?(input, input_, FV): bool =
    LET (G, P, sig, V, PV) = input,
        (G_, P_, sig_, V_, PV_) = input_ IN 
    G = G_ AND P = P_ AND PV = PV_ AND equal_syn?(sig_, sig, FV) AND 
-   subset?(FV, V) AND subset?(FV, V_) AND select_greater[nat](V) <= select_greater[nat](V_)
+   subset?(FV, V) AND subset?(FV, V_) AND select_greater[nat](V) <= select_greater[nat](V_) 
+   AND subset?(vars(P), FV) AND subset?(vars(G), FV) AND subset?(PV, FV)
 
-% 
-var_inputs_cond?(G, P, sig, V, PV, sig_, FV, rho, V1): bool = 
-    match_condition?(P, PV) AND subset?(PV, V) AND subset?(FV, V) AND subset?(vars(G), V)
-    AND disjoint?(dom(rho), V) AND subset?(vars(lhs(P)), V) AND equal_syn?(sig_, sig, FV) AND
+% final definition of variant inputs
+var_inp_cond?(G, P, sig, V, PV, sig_, FV, rho, V1): bool = 
+    match_condition?(P, PV) AND subset?(PV, FV) AND subset?(FV, V) AND subset?(vars(G), FV)
+    AND disjoint?(dom(rho), V) AND subset?(vars(lhs(P)), FV) AND equal_syn?(sig_, sig, FV) AND
     subset?(vars(P), V1) AND
    (FORALL X:
       member(X, vars(img(rho))) AND NOT member(X, dom(rho)) IMPLIES NOT member(X, V1))
-    AND subset?(V, V1) 
+    AND subset?(V, V1) AND subset?(vars(img(sig)), V) 
 
-%%%%%% lemmas and theorems
-var_inputs_cdr: LEMMA  
+%%%% new
+var_inp_cdr: LEMMA   
     LET skip = inst_step(PV, G, t, s)`3 IN 
-    var_inputs_cond?(G, cons((t, s), P), sig, V, PV, sig_, FV, rho, V1) AND skip IMPLIES 
-    var_inputs_cond?(G, P, sig, V, PV, sig_, FV, rho, V1)
-   
-var_inputs_no_effect_lhs: LEMMA  
-    var_inputs_cond?(G, cons((t, s), P), sig, V, PV, sig_, FV, rho, V1) IMPLIES 
+    var_inp_cond?(G, cons((t, s), P), sig, V, PV, sig_, FV, rho, V1) AND skip IMPLIES 
+    var_inp_cond?(G, P, sig, V, PV, sig_, FV, rho, V1)
+
+var_inp_no_effect_lhs: LEMMA  
+    var_inp_cond?(G, cons((t, s), P), sig, V, PV, sig_, FV, rho, V1) IMPLIES 
     subs(rho)(t) = t
 
-var_inputs_disjoint_img: LEMMA  
-    var_inputs_cond?(G, cons((t, s), P), sig, V, PV, sig_, FV, rho, V1) IMPLIES 
+var_inp_no_effect_rhs: LEMMA
+    var_inp_cond?(G, cons((t, s), P), sig, V, PV, sig_, FV, rho, V1) AND
+    subset?(vars(s), FV) IMPLIES subs(rho)(s) = s
+
+var_inp_disjoint_img: LEMMA   
+    var_inp_cond?(G, cons((t, s), P), sig, V, PV, sig_, FV, rho, V1) IMPLIES 
     disjoint?(vars(img(rho)), V)  
 
-var_inputs_option_rhs: LEMMA 
-    var_inputs_cond?(G, cons((t, s), P), sig, V, PV, sig_, FV, rho, V1) IMPLIES 
-    (disjoint?(dom(rho), vars(s)) OR
+var_inp_option_rhs: LEMMA 
+    var_inp_cond?(G, cons((t, s), P), sig, V, PV, sig_, FV, rho, V1) IMPLIES 
+    (subset?(vars(s), FV) OR
      (var?(s) AND NOT member(V(s), PV) AND inst_ptc?((t, s), PV)))
 
-var_inputs_option_rhs2: LEMMA 
-    var_inputs_cond?(G, cons((t, s), P), sig, V, PV, sig_, FV, rho, V1) IMPLIES 
-    (subset?(vars(s), V) OR
-     (var?(s) AND NOT member(V(s), PV) AND inst_ptc?((t, s), PV)))
-
-var_inputs_option_rhs_ren: LEMMA 
-    var_inputs_cond?(G, cons((t, s), P), sig, V, PV, sig_, FV, rho, V1) IMPLIES 
-    (disjoint?(dom(rho), vars(s)) OR
+var_inp_option_rhs_ren: LEMMA 
+    var_inp_cond?(G, cons((t, s), P), sig, V, PV, sig_, FV, rho, V1) IMPLIES 
+    subset?(vars(s), FV) OR
     (var?(subs(rho)(s)) AND NOT member(V(subs(rho)(s)), PV) AND
-    inst_ptc?((subs(rho)(t), subs(rho)(s)), PV)))
+    inst_ptc?((subs(rho)(t), subs(rho)(s)), PV))
 
-var_inputs_inst_step_aux: LEMMA  
-    var_inputs_cond?(G, cons((t, s), P), sig, V, PV, sig_, FV, rho, V1) AND
-    (var?(s) AND NOT member(V(s), PV) AND inst_ptc?((t, s), PV)) AND
-    (NOT disjoint?(dom(rho), vars(s))) IMPLIES 
+var_inp_inst_step_aux: LEMMA 
+    var_inp_cond?(G, cons((t, s), P), sig, V, PV, sig_, FV, rho, V1) AND
+    (NOT subset?(vars(s), FV)) IMPLIES  
     inst_step(PV, G, t, s) = (append(G, G), cons((V(s), ext(reverse(p(s)))(t)), null), FALSE, FALSE)
 
-var_inputs_inst_step_aux2: LEMMA 
-    var_inputs_cond?(G, cons((t, s), P), sig, V, PV, sig_, FV, rho, V1) AND
-    (var?(s) AND NOT member(V(s), PV) AND inst_ptc?((t, s), PV)) AND 
-    (NOT subset?(vars(s), V)) IMPLIES  
-    inst_step(PV, G, t, s) = (append(G, G), cons((V(s), ext(reverse(p(s)))(t)), null), FALSE, FALSE)
-
-var_inputs_inst_step_aux_ren: LEMMA  
-    var_inputs_cond?(G, cons((t, s), P), sig, V, PV, sig_, FV, rho, V1) AND
-    (NOT disjoint?(dom(rho), vars(s))) IMPLIES 
+var_inp_inst_step_aux_ren: LEMMA  
+    var_inp_cond?(G, cons((t, s), P), sig, V, PV, sig_, FV, rho, V1) AND
+    (NOT subset?(vars(s), FV)) IMPLIES 
     inst_step(PV, G, subs(rho)(t), subs(rho)(s)) =
     (append(G, G), cons((V(subs(rho)(s)), ext(reverse(p(subs(rho)(s))))(subs(rho)(t))), null), FALSE, FALSE)
 
-var_inputs_inst_step_aux_ren2: LEMMA  
-    var_inputs_cond?(G, cons((t, s), P), sig, V, PV, sig_, FV, rho, V1) AND
-    (NOT subset?(vars(s), V)) IMPLIES 
-    inst_step(PV, G, subs(rho)(t), subs(rho)(s)) =
-    (append(G, G), cons((V(subs(rho)(s)), ext(reverse(p(subs(rho)(s))))(subs(rho)(t))), null), FALSE, FALSE)
+var_inp_inst_step_disjoint_dom: LEMMA
+    LET delta = inst_step(PV, G, t, s)`2,
+        delta_ = inst_step(PV, G, subs(rho)(t), subs(rho)(s))`2 IN 
+    var_inp_cond?(G, cons((t, s), P), sig, V, PV, sig_, FV, rho, V1) AND (NOT subset?(vars(s), FV))
+    IMPLIES (disjoint?(dom(delta), FV) AND disjoint?(dom(delta_), FV))
 
-var_inputs_equal_syn_aux: LEMMA
+var_inp_equal_syn_aux: LEMMA
+    var?(s) AND var_inp_cond?(G, cons((t, s), P), sig, V, PV, sig_, FV, rho, V1) IMPLIES
     LET sig1 = cons((V(s), ext(reverse(p(s)))(t)), null), 
 	sig1_ = cons((V(subs(rho)(s)), ext(reverse(p(subs(rho)(s))))(subs(rho)(t))), null) IN 
-    var_inputs_cond?(G, cons((t, s), P), sig, V, PV, sig_, FV, rho, V1) AND var?(s) IMPLIES 
-    equal_syn?(append(sig1_, rho), append(rho, sig1), V1)
+	equal_syn?(append(sig1_, rho), append(rho, sig1), V1)
 
-var_inputs_equal_syn: LEMMA 
+var_inp_equal_syn: LEMMA 
     LET delta = inst_step(PV, G, t, s)`2,
         delta_ = inst_step(PV, G, subs(rho)(t), subs(rho)(s))`2 IN 
-    var_inputs_cond?(G, cons((t, s), P), sig, V, PV, sig_, FV, rho, V1) IMPLIES 
+    var_inp_cond?(G, cons((t, s), P), sig, V, PV, sig_, FV, rho, V1) IMPLIES 
     equal_syn?(append(delta_, rho), append(rho, delta), V1)
 
-var_inputs_equal_syn_unif_prb: LEMMA
+var_inp_equal_syn_unif_prb: LEMMA
     LET delta = inst_step(PV, G, t, s)`2,
         delta_ = inst_step(PV, G, subs(rho)(t), subs(rho)(s))`2 IN 
-    var_inputs_cond?(G, cons((t, s), P), sig, V, PV, sig_, FV, rho, V1) IMPLIES 
+    var_inp_cond?(G, cons((t, s), P), sig, V, PV, sig_, FV, rho, V1) IMPLIES 
     apply_sub(delta_, apply_sub(rho, P)) = apply_sub(rho, apply_sub(delta, P))
 
-var_inputs_equal_syn2: CONJECTURE 
+var_inp_equal_syn2: LEMMA 
     LET delta = inst_step(PV, G, t, s)`2,
         delta_ = inst_step(PV, G, subs(rho)(t), subs(rho)(s))`2 IN 
-    var_inputs_cond?(G, cons((t, s), P), sig, V, PV, sig_, FV, rho, V1) IMPLIES 
+    var_inp_cond?(G, cons((t, s), P), sig, V, PV, sig_, FV, rho, V1) IMPLIES 
     equal_syn?(append(delta_, sig_), append(delta, sig), FV)
-   
-var_inputs_inst_step_preservation: CONJECTURE 
+
+var_inp_equal_syn3: LEMMA 
+    LET delta = inst_step(PV, G, t, s)`2,
+        delta_ = inst_step(PV, G, subs(rho)(t), subs(rho)(s))`2 IN 
+    var_inp_cond?(G, cons((t, s), P), sig, V, PV, sig_, FV, rho, V1) IMPLIES 
+    equal_syn?(delta_, delta, FV)
+
+var_inp_inst_step_preservation: LEMMA 
     LET (G1, delta, skip, fail) = inst_step(PV, G, t, s),
         delta_ = inst_step(PV, G, subs(rho)(t), subs(rho)(s))`2 IN 
-	var_inputs_cond?(G, cons((t, s), P), sig, V, PV, sig_, FV, rho, V1)
+	var_inp_cond?(G, cons((t, s), P), sig, V, PV, sig_, FV, rho, V1)
 	AND NOT fail AND NOT skip IMPLIES 
-	var_inputs_cond?(G1, apply_sub(delta, P), append(delta, sig), V, PV,
+	var_inp_cond?(G1, apply_sub(delta, P), append(delta, sig), V, PV,
 	                 append(delta_, sig_), FV, rho, V1)
 
-var_inputs_inst_step_ctx: CONJECTURE 
+var_inp_inst_step_ctx: LEMMA 
     LET (G1, P1, sigma1, fail) = inst_step(PV, G, P, null, null), 
         (G1_, P1_, sigma1_, fail_) = inst_step(PV, G, apply_sub(rho, P), null, null) IN 
-	var_inputs_cond?(G, P, sig, V, PV, sig_, FV, rho, V1) 
+	var_inp_cond?(G, P, sig, V, PV, sig_, FV, rho, V1) 
 	IMPLIES G1 = G1_
 
-var_inputs_inst_step: CONJECTURE 
+var_inp_inst_step_fail: LEMMA 
     LET (G1, P1, sigma1, fail) = inst_step(PV, G, P, null, null), 
         (G1_, P1_, sigma1_, fail_) = inst_step(PV, G, apply_sub(rho, P), null, null) IN 
-	var_inputs_cond?(G, P, sig, V, PV, sig_, FV, rho, V1) 
+	var_inp_cond?(G, P, sig, V, PV, sig_, FV, rho, V1) 
+	IMPLIES fail = fail_
+
+var_inp_inst_step_sub: LEMMA 
+    LET (G1, P1, sigma1, fail) = inst_step(PV, G, P, null, null), 
+        (G1_, P1_, sigma1_, fail_) = inst_step(PV, G, apply_sub(rho, P), null, null) IN 
+	var_inp_cond?(G, P, sig, V, PV, sig_, FV, rho, V1) 
+	IMPLIES 
+	equal_syn?(append(sigma1_, sig_), append(sigma1, sig), FV)
+
+var_inp_inst_step_sub2: LEMMA
+    LET (G1, P1, sigma1, fail) = inst_step(PV, G, P, null, null), 
+        (G1_, P1_, sigma1_, fail_) = inst_step(PV, G, apply_sub(rho, P), null, null) IN 
+	var_inp_cond?(G, P, sig, V, PV, sig_, FV, rho, V1) 
+	IMPLIES 
+	equal_syn?(sigma1_, sigma1, FV)
+
+var_inp_inst_step_unif_prb: LEMMA 
+    LET (G1, P1, sigma1, fail) = inst_step(PV, G, P, null, null), 
+        (G1_, P1_, sigma1_, fail_) = inst_step(PV, G, apply_sub(rho, P), null, null) IN 
+	var_inp_cond?(G, P, sig, V, PV, sig_, FV, rho, V1) 
+	IMPLIES P1 = P1_
+
+var_inp_inst_step: LEMMA 
+    LET (G1, P1, sigma1, fail) = inst_step(PV, G, P, null, null), 
+        (G1_, P1_, sigma1_, fail_) = inst_step(PV, G, apply_sub(rho, P), null, null) IN 
+	var_inp_cond?(G, P, sig, V, PV, sig_, FV, rho, V1) 
 	IMPLIES 
 	G1 = G1_ AND P1 = P1_ AND fail = fail_ AND
 	equal_syn?(append(sigma1, sig), append(sigma1_, sig_), FV)
 
-var_inputs_apply_ac: CONJECTURE
-   LET (G, P, sigma, V, PV) = input,  
+
+% variant inputs and the corresponding lemmas in the algorithm 
+var_inp_ac: LEMMA
+   LET (G, P, sigma_, V_, PV) = input_, 
        (up, P1) = choose_eq(P), (t, s) = up IN 
-   ac_prb?((t, s)) AND NOT null?(P) AND var_inputs?(input_, input, FV)
-   AND member(input1, apply_ac(G, cons((t, s), P1), sigma, V, PV)) IMPLIES
-   EXISTS input1_: 
-       member(input1_, apply_ac(G, cons((t, s), P1), input_`3, input_`4, PV)) AND
-       var_inputs?(input1_, input1, FV)
+   ac_prb?((t, s)) AND NOT null?(P) AND var_inputs?(input, input_, FV) AND
+   member(input1_, apply_ac(G, cons((t, s), P1), sigma_, V_, PV)) IMPLIES 
+   EXISTS input1: 
+       member(input1, apply_ac(G, cons((t, s), P1), input`3, input`4, PV)) AND
+       var_inputs?(input1, input1_, FV)
+
+%var_inp_inst_step: CONJECTURE
+%   LET (G, P, sigma_, V_, PV) = input_ IN 
+%   (NOT null?(P) AND
+%   LET (up, P1) = choose_eq(P), (t, s) = up IN 
+%   var?(t) AND NOT member(V(t), vars(s)) AND 
+%   LET sigma1 = cons((V(t), ext(reverse(p(t)))(s)), null),
+%       (G1, bool1) = fresh_subs?(sigma1, G), 
+%       new_G = append(G1, G), 
+%       new_sigma = append(sigma1, sigma), 
+%       new_P = apply_sub(sigma1, P1) IN 
+%   var_inputs?(input, input_, FV)) IMPLIES 
+%   var_inputs?((new_G_, new_P_, append(sig2_, sig), V, PV_), (new_G_, new_P_, append(sig2_, sig_), V_, PV_), FV)
 
 
 END variant_inputs

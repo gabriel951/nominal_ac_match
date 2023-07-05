@@ -20,8 +20,8 @@ pi: VAR perm
 a: VAR atom
 X: VAR variable
 t, s: VAR term
-sigma, sigma1, sigma1_, delta, gamma, gamma_: VAR sub
-vars2avoid, fixed_vars, FV, V, PV: VAR finite_set[variable]
+sigma, sigma_, sigma1, sigma1_, delta, gamma, gamma_: VAR sub
+vars2avoid, fixed_vars, FV, V, V_, PV: VAR finite_set[variable]
 
 up, unif_pair: VAR unif_pair
 unif_prb, P, P1: VAR unif_prb
@@ -208,11 +208,60 @@ unify_completeness_match_aux: CONJECTURE
       is_instance?(Delta, delta)(Gamma1, sigma1, V, vars(s))
 
 % correctness of variant inputs 
-unify_variant_inputs: CONJECTURE
-   var_inputs?(input, input_, FV) AND member((Gamma1_, sigma1_), unify(input_)) IMPLIES 
-   EXISTS Gamma1, sigma1: 
-      member((Gamma1, sigma1), unify(input)) AND
-      var_pair?(Gamma1_, sigma1_, Gamma1, sigma1, FV) 
+unify_var_inp_choose_eq: LEMMA
+   LET (up, P1) = choose_eq(P) IN 
+      nice_input?(G, P, sigma_, V_, PV) AND nice_input?(G, P, sigma, V, PV)
+      AND var_inputs?((G, P, sigma, V, PV), (G, P, sigma_, V_, PV), FV) AND NOT null?(P) IMPLIES 
+      var_inputs?((G, P1, sigma, V, PV), (G, P1, sigma_, V_, PV), FV)
+
+unify_var_inp_var: LEMMA 
+   LET (up, P1) = choose_eq(P), (t, s) = up IN  
+   nice_input?(G, P, sigma_, V_, PV) AND nice_input?(G, P, sigma, V, PV)
+   AND var_inputs?((G, P, sigma, V, PV), (G, P, sigma_, V_, PV), FV) AND NOT null?(P) AND
+   var?(t) AND NOT member(V(t), vars(s)) IMPLIES 
+   (LET sigma1 = cons((V(t), ext(reverse(p(t)))(s)), null),
+        (G1, bool1) = fresh_subs?(sigma1, G), new_G = append(G1, G), 
+	new_P = apply_sub(sigma1, P1) IN 
+   var_inputs?((new_G, new_P, append(sigma1, sigma), V, PV), (new_G, new_P, append(sigma1, sigma_), V_, PV), FV))
+
+unify_var_inp_var2: LEMMA 
+   LET (up, P1) = choose_eq(P), (t, s) = up IN  
+   nice_input?(G, P, sigma_, V_, PV) AND nice_input?(G, P, sigma, V, PV) AND 
+   var_inputs?((G, P, sigma, V, PV), (G, P, sigma_, V_, PV), FV) AND NOT null?(P)
+   AND var?(t) AND var?(s) IMPLIES 
+   (LET G2 = fc(DS(p(t), p(s)), V(t)), new_G = append(G2, G) IN 
+    var_inputs?((new_G, P1, sigma, V, PV), (new_G, P1, sigma_, V_, PV), FV))
+
+unify_var_inp_app: LEMMA 
+   LET (up, P1) = choose_eq(P), (t, s) = up IN  
+   nice_input?(G, P, sigma_, V_, PV) AND nice_input?(G, P, sigma, V, PV) AND 
+   var_inputs?((G, P, sigma, V, PV), (G, P, sigma_, V_, PV), FV) AND NOT null?(P)
+   AND app?(t) AND app?(s) AND same_func?(t, s) IMPLIES
+   (LET dec_P = decompose(arg(t), arg(s))`1, new_P = append(dec_P, P1) IN
+   var_inputs?((G, new_P, sigma, V, PV), (G, new_P, sigma_, V_, PV), FV))
+
+unify_var_inp_abs: LEMMA 
+   LET (up, P1) = choose_eq(P), (t, s) = up IN  
+   nice_input?(G, P, sigma_, V_, PV) AND nice_input?(G, P, sigma, V, PV) AND 
+   var_inputs?((G, P, sigma, V, PV), (G, P, sigma_, V_, PV), FV) AND NOT null?(P)
+   AND abs?(t) AND abs?(s) IMPLIES
+   (LET dec_P = decompose(body(t), body(s))`1, new_P = append(dec_P, P1) IN 
+   var_inputs?((G, new_P, sigma, V, PV), (G, new_P, sigma_, V_, PV), FV))
+
+unify_var_inp_abs2: LEMMA 
+   LET (up, P1) = choose_eq(P), (t, s) = up IN  
+   nice_input?(G, P, sigma_, V_, PV) AND nice_input?(G, P, sigma, V, PV) AND 
+   var_inputs?((G, P, sigma, V, PV), (G, P, sigma_, V_, PV), FV) AND NOT null?(P)
+   AND abs?(t) AND abs?(s) IMPLIES
+   (LET G1  = fresh?(abstr(t), body(s))`1,
+	new_G = append(G1, G), dec_P = decompose(body(t), ext(pi)(body(s)))`1,
+	new_P = append(dec_P, P1) IN  
+   var_inputs?((new_G, new_P, sigma, V, PV), (new_G, new_P, sigma_, V_, PV), FV))
+
+unify_var_inputs: LEMMA
+   var_inputs?(input, input_, FV) AND member((Gamma1, sigma1_), unify(input_)) IMPLIES 
+   EXISTS sigma1: 
+      member((Gamma1, sigma1), unify(input)) AND equal_syn?(sigma1_, sigma1, FV)
 
 % completeness for matching 
 unify_completeness_match: CONJECTURE 
@@ -221,5 +270,4 @@ unify_completeness_match: CONJECTURE
    EXISTS Gamma1, sigma1: 
       member((Gamma1, sigma1), unify(null, cons((t, s), null), null, vars(t, s), vars(s))) AND
       is_instance?(Delta, delta)(Gamma1, sigma1, vars(t, s), vars(s))
-    
 END unification_alg 

@@ -21,12 +21,12 @@ f: VAR string
 
 X: VAR variable
 
-pi: VAR perm
+pi, pi1: VAR perm
 t, s: VAR term 
 
 G, G1, Delta: VAR fresh_context
 
-new_vars2avoid, vars2avoid, vars2avoid1, V, V1, PV: VAR finite_set[variable]
+new_vars2avoid, vars2avoid, vars2avoid1, V, V1, PV, PV1: VAR finite_set[variable]
 
 lst_vars2avoid, lst_V: VAR list[variable]
 
@@ -121,9 +121,19 @@ nice_input_dec_abs: LEMMA
    AND abs?(t) AND abs?(s) AND subset?(P1, P) IMPLIES
    nice_input?(G, append(decompose(body(t), ext(pi)(body(s)))`1, P1), sigma, V, PV)
 
+nice_input_dec_abs2: LEMMA 
+   nice_input?(G, P, sigma, V, PV) AND member(t, P) AND member(s, rhs(P)) AND NOT null?(P)
+   AND abs?(t) AND abs?(s) AND subset?(P1, P) IMPLIES
+   (LET G1 = fresh?(abstr(t), body(s))`1 IN
+   nice_input?(append(G1, G), append(decompose(body(t), ext(pi)(body(s)))`1, P1), sigma, V, PV))
+
 nice_input_initial_problem: LEMMA 
    subset?(vars(t, s), V) AND well_formed?((t, s)) IMPLIES
    nice_input?(null, cons((t, s), null), null, V, vars(s))
+
+nice_input_fc: LEMMA 
+    nice_input?(G, P, sigma, V, PV) AND subset?(P1, P) AND member(X, vars(P)) IMPLIES 
+    nice_input?(append(fc(DS(pi, pi1), X), G), P1, sigma, V, PV) 
 
 % input_apply_ac
 input_apply_ac_mem: LEMMA 
@@ -198,7 +208,7 @@ choose_eq_unifies: LEMMA
     NOT null?(P) IMPLIES    
     unifies?(Delta, delta, P) = (unifies?(Delta, delta, choose_eq(P)`1) AND
     		    	         unifies?(Delta, delta, choose_eq(P)`2))
- 
+
 choose_eq_nice_input: LEMMA 
    nice_input?(G, P, sigma, V, PV) AND NOT null?(P) IMPLIES nice_input?(G, choose_eq(P)`2, sigma, V, PV)
 
@@ -258,7 +268,12 @@ apply_ac(input): list[nice_input] =
      ENDIF 
    ENDIF
 
-% apply_ac
+
+% lemmas
+apply_ac_is_nice_input: LEMMA 
+    member((G1, P1, sigma1, V1, PV1), apply_ac(input)) IMPLIES
+    nice_input?(G1, P1, sigma1, V1, PV1)
+
 apply_ac_mem5: LEMMA
     member(input1, apply_ac(input)) IMPLIES input1`5 = input`5
 
