@@ -1847,9 +1847,9 @@
     nil)
    ((real_lt_is_strict_total_order name-judgement
      "(strict_total_order?[real])" real_props nil)
-    nil nil nil nil nil (subs_remove formula-decl nil substitution nil)
+    (subs_remove formula-decl nil substitution nil)
     (int_minus_int_is_int application-judgement "int" integers nil)
-    (remove_len formula-decl nil list_theory nil) nil
+    (remove_len formula-decl nil list_theory nil)
     (nth def-decl "T" list_props nil)
     (subs_equal? formula-decl nil fresh_subs nil)
     (subs_args_nth formula-decl nil substitution nil)
@@ -1869,7 +1869,7 @@
     (naturalnumber type-eq-decl nil naturalnumbers nil)
     (args type-eq-decl nil term_properties nil)
     (TRUE const-decl "bool" booleans nil)
-    (AND const-decl "[bool, bool -> bool]" booleans nil) nil nil
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
     (PRED type-eq-decl nil defined_types nil)
     (term type-decl nil term_adt nil)
     (ac_symbol type-eq-decl nil term_properties nil)
@@ -1933,12 +1933,48 @@
     (subs_map formula-decl nil substitution nil))
    nil))
  (subs_same_count_TCC1 0
-  (subs_same_count_TCC1-1 nil 3886000166 ("" (subtype-tcc) nil nil) nil
+  (subs_same_count_TCC1-1 nil 3886000166
+   ("" (skeep) (("" (rewrite "equal?_equiv") nil nil)) nil)
+   ((equal?_equiv formula-decl nil equality nil)
+    (number nonempty-type-decl nil numbers nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (number_field_pred const-decl "[number -> boolean]" number_fields
+     nil)
+    (number_field nonempty-type-from-decl nil number_fields nil)
+    (real_pred const-decl "[number_field -> boolean]" reals nil)
+    (real nonempty-type-from-decl nil reals nil)
+    (rational_pred const-decl "[real -> boolean]" rationals nil)
+    (rational nonempty-type-from-decl nil rationals nil)
+    (integer_pred const-decl "[rational -> boolean]" integers nil)
+    (int nonempty-type-eq-decl nil integers nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (>= const-decl "bool" reals nil) (atom type-eq-decl nil atoms nil)
+    (variable type-eq-decl nil term_properties nil)
+    (list type-decl nil list_adt nil)
+    (fresh_context type-eq-decl nil freshness nil))
    nil
    (subs_same_count subtype "equality.equal?(fresh_subs.G)"
     "equiv[term[atom, perm, variable, f_symbol, ac_symbol]]")))
  (subs_same_count_TCC2 0
-  (subs_same_count_TCC2-1 nil 3886000166 ("" (subtype-tcc) nil nil) nil
+  (subs_same_count_TCC2-1 nil 3886000166
+   ("" (skeep) (("" (rewrite "equal?_equiv") nil nil)) nil)
+   ((equal?_equiv formula-decl nil equality nil)
+    (number nonempty-type-decl nil numbers nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (number_field_pred const-decl "[number -> boolean]" number_fields
+     nil)
+    (number_field nonempty-type-from-decl nil number_fields nil)
+    (real_pred const-decl "[number_field -> boolean]" reals nil)
+    (real nonempty-type-from-decl nil reals nil)
+    (rational_pred const-decl "[real -> boolean]" rationals nil)
+    (rational nonempty-type-from-decl nil rationals nil)
+    (integer_pred const-decl "[rational -> boolean]" integers nil)
+    (int nonempty-type-eq-decl nil integers nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (>= const-decl "bool" reals nil) (atom type-eq-decl nil atoms nil)
+    (variable type-eq-decl nil term_properties nil)
+    (list type-decl nil list_adt nil)
+    (fresh_context type-eq-decl nil freshness nil))
    nil
    (subs_same_count subtype "equality.equal?(fresh_subs.G1)"
     "equiv[term[atom, perm, variable, f_symbol, ac_symbol]]")))
@@ -2101,7 +2137,25 @@
     (dom const-decl "finite_set[variable]" substitution nil))
    shostak))
  (subs_count_ge_TCC1 0
-  (subs_count_ge_TCC1-1 nil 3886000275 ("" (subtype-tcc) nil nil) nil
+  (subs_count_ge_TCC1-1 nil 3886000275
+   ("" (skeep) (("" (rewrite "equal?_equiv") nil nil)) nil)
+   ((equal?_equiv formula-decl nil equality nil)
+    (number nonempty-type-decl nil numbers nil)
+    (boolean nonempty-type-decl nil booleans nil)
+    (number_field_pred const-decl "[number -> boolean]" number_fields
+     nil)
+    (number_field nonempty-type-from-decl nil number_fields nil)
+    (real_pred const-decl "[number_field -> boolean]" reals nil)
+    (real nonempty-type-from-decl nil reals nil)
+    (rational_pred const-decl "[real -> boolean]" rationals nil)
+    (rational nonempty-type-from-decl nil rationals nil)
+    (integer_pred const-decl "[rational -> boolean]" integers nil)
+    (int nonempty-type-eq-decl nil integers nil)
+    (bool nonempty-type-eq-decl nil booleans nil)
+    (>= const-decl "bool" reals nil) (atom type-eq-decl nil atoms nil)
+    (variable type-eq-decl nil term_properties nil)
+    (list type-decl nil list_adt nil)
+    (fresh_context type-eq-decl nil freshness nil))
    nil
    (subs_count_ge subtype "equality.equal?(fresh_subs.G1)"
     "equiv[term[atom, perm, variable, f_symbol, ac_symbol]]")))
@@ -7870,8 +7924,7 @@
     (* adt-constructor-decl "[[perm, variable] -> (var?)]" term_adt
        nil)
     (var? adt-recognizer-decl "[term -> boolean]" term_adt nil)
-    (singleton const-decl "(singleton?)" sets nil)
-    (vars def-decl "finite_set[variable]" term_properties nil)
+    (singleton const-decl "(singleton?)" sets nil) nil
     (nonempty_singleton_finite application-judgement
      "non_empty_finite_set" finite_sets nil)
     (reverse def-decl "list[T]" list_props nil)
@@ -7907,8 +7960,7 @@
     (sub type-eq-decl nil substitution nil)
     (basic_sub type-eq-decl nil substitution nil)
     (TRUE const-decl "bool" booleans nil)
-    (AND const-decl "[bool, bool -> bool]" booleans nil)
-    (every adt-def-decl "boolean" term_adt nil)
+    (AND const-decl "[bool, bool -> bool]" booleans nil) nil
     (PRED type-eq-decl nil defined_types nil)
     (term type-decl nil term_adt nil)
     (ac_symbol type-eq-decl nil term_properties nil)
@@ -8074,14 +8126,14 @@
     (f_symbol type-eq-decl nil term_properties nil)
     (ac_symbol type-eq-decl nil term_properties nil)
     (fresh? def-decl "[fresh_context, bool]" freshness nil)
-    (fresh_subs def-decl "bool" fresh_subs nil) nil
+    (fresh_subs def-decl "bool" fresh_subs nil)
     (fresh def-decl "bool" freshness nil)
     (IMPLIES const-decl "[bool, bool -> bool]" booleans nil)
     (sub type-eq-decl nil substitution nil)
     (basic_sub type-eq-decl nil substitution nil)
     (fresh_context type-eq-decl nil freshness nil)
     (TRUE const-decl "bool" booleans nil)
-    (AND const-decl "[bool, bool -> bool]" booleans nil) nil
+    (AND const-decl "[bool, bool -> bool]" booleans nil)
     (PRED type-eq-decl nil defined_types nil)
     (term type-decl nil term_adt nil))
    nil)

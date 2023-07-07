@@ -1,12 +1,3 @@
-% Authors:
-%		Gabriel Ferreira Silva (*)
-% 		Mauricio Ayala-Rincón (*)
-% 		Daniele Nantes Sobrinho (*)
-% 		Maribel Fernandez (**)
-%		(*) - University of Brasília			(**) - King's College London
-%
-%%%%%%%%%%%%%%%%%%%%%%%
-
 ac_step: THEORY
 BEGIN
 	IMPORTING aux_unification, inst_step
@@ -130,6 +121,10 @@ nice_input_dec_abs2: LEMMA
 nice_input_initial_problem: LEMMA 
    subset?(vars(t, s), V) AND well_formed?((t, s)) IMPLIES
    nice_input?(null, cons((t, s), null), null, V, vars(s))
+
+nice_input_initial_problem2: LEMMA 
+   subset?(vars(t, s), V) AND well_formed?((t, s)) IMPLIES
+   nice_input?(null, cons((t, s), null), null, V, vars(t, s))
 
 nice_input_fc: LEMMA 
     nice_input?(G, P, sigma, V, PV) AND subset?(P1, P) AND member(X, vars(P)) IMPLIES 

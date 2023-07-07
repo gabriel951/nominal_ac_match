@@ -6,7 +6,7 @@ BEGIN
 i, j, n: VAR nat
 
 lst_nat1, lst_nat2: VAR list[nat]
-fin_set_nat: VAR finite_set[nat]
+fin_set_nat, fin_set_nat1: VAR finite_set[nat]
 fin_set: VAR finite_set[T]
 
 x, y: VAR T
@@ -27,6 +27,10 @@ select_greater(fin_set_nat): nat = select_greater[nat](finset2list(fin_set_nat))
 
 select_greater_finset2list2set: LEMMA 
    select_greater[nat](finset2list(list2set(lst_nat1))) = select_greater[nat](lst_nat1)
+
+select_greater_subset: LEMMA
+   subset?(fin_set_nat, fin_set_nat1) IMPLIES 
+   select_greater(fin_set_nat) <= select_greater(fin_set_nat1)
 
 dif_elem_from_min2max: LEMMA 
    dif_elem?[nat](from_min2max[nat](i, j), =) 

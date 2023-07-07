@@ -1,12 +1,3 @@
-% Authors:
-%		Gabriel Ferreira Silva (*)
-% 		Mauricio Ayala-Rincón (*)
-% 		Daniele Nantes Sobrinho (*)
-% 		Maribel Fernandez (**)
-%		(*) - University of Brasília			(**) - King's College London
-%
-%%%%%%%%%%%%%%%%%%%%%%%
-
 fresh_subs: THEORY
 BEGIN
 
@@ -106,14 +97,6 @@ subs_perm?_get_args: LEMMA
 subs_same_count: LEMMA 
     same_count?(args1, args2, equal?(G)) AND fresh_subs(G1)(sigma, G) IMPLIES
     same_count?(subs(sigma)(args1), subs(sigma)(args2), equal?(G1))
-
-%subs_count_vec: CONJECTURE 
-%    (FORALL t: 
-%       dot_product(count_vec(args1, f, G)(t), coef) = dot_product(count_vec(args2, f, G)(t), coef2)) 
-%    AND fresh_subs(G1)(sigma, G) AND no_pair_ac?(f, args1) AND no_pair_ac?(f, args2) IMPLIES 
-%    (FORALL s: 
-%       dot_product(count_vec(subs(sigma)(args1), f, G1)(s), coef) =
-%       dot_product(count_vec(subs(sigma)(args2), f, G1)(s), coef2))
 
 equal_sub_res_append: LEMMA 
    equal?(G)(sigma, sigma1, set_vars) AND fresh_subs(G1)(delta, G) IMPLIES
@@ -259,24 +242,5 @@ aux_lemma_fresh_sub1: LEMMA
 % auxiliar lemma for aux_lemma_fresh_sub
 fresh_alpha_equivalent: LEMMA
    fresh(Nabla)(a, t) AND equal?(Nabla)(t, s) => fresh(Nabla)(a, s)
-
-% useful lemma that appear in the proof of correctness
-aux_lemma_fresh_sub_reverse1: CONJECTURE
-   fresh_subs(Nabla)(sigma, fresh?(a, t)`1) AND fresh?(a, t)`2 
-   => fresh(Nabla)(a, subs(sigma)(t))
-
-% lemma to be used in the theorem of completeness   
-aux_lemma_fresh_sub: CONJECTURE
-   fresh_subs(Nabla)(sigma, Delta) AND more_general?(Nabla)(gamma, sigma) AND idempotent?(gamma) =>
-   fresh_subs(Nabla)(sigma, fresh_subs?(gamma, Delta)`1)
-
-% aux lemma for the one below
-aux_lemma_fresh_sub_aux: CONJECTURE
-   fresh(Nabla)(a, subs(sigma)(t)) => fresh?(a, t)`2
-
-% lemma to be used in the proof of completeness 
-aux_lemma_fresh_sub2: CONJECTURE 
-   fresh_subs(Nabla)(sigma, Delta) AND more_general?(Nabla)(gamma, sigma) AND idempotent?(gamma) 
-   => fresh_subs?(gamma, Delta)`2
 
 END fresh_subs

@@ -1,20 +1,10 @@
-%
-% Authors:
-%  		Gabriel Ferreira Silva (*)
-% 		Mauricio Ayala-Rincón (*)
-% 		Daniele Nantes Sobrinho (*)
-% 		Maribel Fernandez (**)
-%		(*) - University of Brasília			(**) - King's College London
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 unification: THEORY
 BEGIN
 	IMPORTING fresh_subs, list_theory2[term, term]
 
 a, b: VAR atom
 Delta, G, G1, Nabla: VAR fresh_context 
-sigma, sigma1, delta, gamma: VAR sub
+sigma, sigma_, sigma1, delta, gamma: VAR sub
 rho: VAR renaming
 lst_sub: VAR list[sub]
 vars2avoid, set_vars, PV, PV2, V1, V2: VAR finite_set[variable]
@@ -779,4 +769,10 @@ solves_elim_append: LEMMA
    AND disjoint?(dom(delta), PV) AND well_formed?(delta) AND contained?(delta, V1)
    IMPLIES solves?(Delta, delta)(Nabla, null, sigma, V1, PV)
 
+is_instance_equal_syn: LEMMA
+   is_instance?(Delta, delta)(Nabla, sigma_, V1, PV) AND
+   equal_syn?(sigma, sigma_, V2) AND subset?(V2, V1) 
+   IMPLIES 
+   is_instance?(Delta, delta)(Nabla, sigma, V2, PV)
+   
 END unification 

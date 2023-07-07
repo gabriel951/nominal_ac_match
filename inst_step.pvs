@@ -1,12 +1,3 @@
-% Authors:
-%		Gabriel Ferreira Silva (*)
-% 		Mauricio Ayala-Rincón (*)
-% 		Daniele Nantes Sobrinho (*)
-% 		Maribel Fernandez (**)
-%		(*) - University of Brasília			(**) - King's College London
-%
-%%%%%%%%%%%%%%%%%%%%%%%
-
 inst_step: THEORY
 BEGIN
 	IMPORTING unification, fresh_subs, diophantine, list_theory[number], list_theory[args], list_theory[basic_sub], 
@@ -487,10 +478,6 @@ inst_step_vars_context: LEMMA
 inst_step_ctx_correct: LEMMA
     LET G1 = inst_step(PV, G, P, null, null)`1 IN
     G1 = append(inst_step_ctx(PV, G, P), G) 
-
-inst_step_ctx_vars: CONJECTURE
-    subset?(vars(inst_step_ctx(PV, G, P)), vars(P))
-
 
 inst_step_match_img2: LEMMA
     LET delta = inst_step(PV, G, P, null, null)`3 IN 
